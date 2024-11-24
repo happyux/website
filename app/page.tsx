@@ -591,182 +591,32 @@ export default function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
-                <p className="text-muted-foreground mb-6">
-                  At happyux.ai, our mission is to transform the digital landscape by creating AI-powered user experiences that not only meet business objectives but also bring joy and satisfaction to users. We believe that the synergy of AI and UX design has the power to make the world a little bit smarter and happier, one interaction at a time.
-                </p>
-                <h3 className="text-2xl font-bold mb-4">Our Approach</h3>
-                <p className="text-muted-foreground">
-                  We combine AI-driven insights with creative problem-solving to deliver UX solutions that are both innovative and effective. Our collaborative approach ensures that we work closely with our clients, leveraging the power of AI to understand their unique challenges and goals, creating tailored solutions that drive real results and adapt to changing user needs.
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="relative"
-              >
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  width={600}
-                  height={400}
-                  alt="happyux.ai team collaborating with AI tools on a UX design project"
-                  className="rounded-lg shadow-lg"
-                />
-                <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
-                  <p className="font-bold text-lg">AI-Powered Innovation</p>
-                  <p className="text-sm">Creating Intelligent User Experiences</p>
-                </div>
-              </motion.div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-16 text-center"
-            >
-              <h3 className="text-2xl font-bold mb-6">Our Values</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                  { title: "AI-Enhanced User-Centricity", description: "We leverage AI to deeply understand and anticipate user needs, creating experiences that truly resonate." },
-                  { title: "Ethical AI Innovation", description: "We push the boundaries of AI in UX while maintaining a strong commitment to ethical AI practices and user privacy." },
-                  { title: "Human-AI Collaboration", description: "We believe the best results come from the synergy between human creativity and AI capabilities." },
-                ].map((value, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardContent className="p-6">
-                      <h4 className="text-xl font-semibold mb-2">{value.title}</h4>
-                      <p className="text-muted-foreground">{value.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
+                transition={{ duration: 0.I'll provide you with the content for each of these files. Let's go through them one by one:
 
-        {/* Contact Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted" aria-labelledby="contact-title">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-2"
-              >
-                <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Ready for AI-Powered UX Excellence?</h2>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Let's create intelligent experiences that your users will love. Contact us to start your AI-enhanced UX journey and accelerate your startup's growth.
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="w-full max-w-lg"
-              >
-                <Card className="hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                  <CardHeader>
-                    <CardTitle>Contact Our AI-Powered Team</CardTitle>
-                    <CardDescription>Fill out the form below and our AI will analyze your request for a personalized response within 24 hours.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit}>
-                      <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                          <Label htmlFor="name" className="text-left w-full">Name</Label>
-                          <Input
-                            id="name"
-                            name="name"
-                            placeholder="John Doe"
-                            value={formState.name}
-                            onChange={handleInputChange}
-                            required
-                            aria-required="true"
-                          />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                          <Label htmlFor="email" className="text-left w-full">Email</Label>
-                          <Input
-                            id="email"
-                            name="email"
-                            placeholder="john@example.com"
-                            type="email"
-                            value={formState.email}
-                            onChange={handleInputChange}
-                            required
-                            aria-required="true"
-                          />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                          <Label className="text-left w-full">Service</Label>
-                          <RadioGroup
-                            onValueChange={handleRadioChange}
-                            value={formState.projectType}
-                            aria-label="Select a service"
-                          >
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="ai-research" id="ai-research" />
-                              <Label htmlFor="ai-research" className="text-left w-full">AI-Enhanced User Research</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="ai-design" id="ai-design" />
-                              <Label htmlFor="ai-design" className="text-left w-full">AI-Powered Experience Design</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="ai-optimization" id="ai-optimization" />
-                              <Label htmlFor="ai-optimization" className="text-left w-full">AI-Driven UX Optimization</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                          <Label htmlFor="message" className="text-left w-full">Project Details</Label>
-                          <Textarea
-                            id="message"
-                            name="message"
-                            placeholder="Tell us about your project and how AI can help"
-                            value={formState.message}
-                            onChange={handleInputChange}
-                            required
-                            aria-required="true"
-                          />
-                        </div>
-                      </div>
-                      <Button
-                        type="submit"
-                        className="w-full mt-4"
-                        disabled={isSubmitting}
-                        aria-disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <>Processing... <Zap className="ml-2 h-4 w-4 animate-pulse" aria-hidden="true" /></>
-                        ) : (
-                          <>Send Message <Send className="ml-2 h-4 w-4" aria-hidden="true" /></>
-                        )}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex flex-col sm:flex-row justify-between items-center py-6 px-4">
-          <p className="text-sm text-muted-foreground order-2 sm:order-1 mt-4 sm:mt-0">
-            © 2024 happyux.ai. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2 order-1 sm:order-2">
-            <SmilePlus className="h-6 w-6 text-primary" aria-hidden="true" />
-            <span className="text-sm font-medium">happyux.ai</span>
-          </div>
-        </div>
-      </footer>
-    </div>
+
+1. app/layout.tsx
+
+```tsx project="HappyUX.ai" file="app/layout.tsx" type="react"
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'HappyUX.ai',
+  description: 'AI-powered UX design for tech startups',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
   )
 }
