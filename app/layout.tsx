@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'HappyUX.ai - AI-Powered UX Design for Tech Startups',
-  description: 'Revolutionize your digital experience with AI-driven UX design solutions tailored for tech startups. Fast, innovative, and user-centric.',
+  title: 'happyux.ai - AI-Powered UX Design for Tech Startups',
+  description: 'Elevate your digital products with our cutting-edge AI solutions that blend data-driven insights with human creativity. Rapid delivery for tech startups.',
 }
 
 export default function RootLayout({

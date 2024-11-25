@@ -619,14 +619,11 @@ export default function Page() {
         </section>
 
         {/* About Us Section */}
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="about-title">
-          <div className="containerI'll provide you with the necessary files for a smooth deployment using Vercel. Let's create a basic Next.js project structure with the main files you'll need.
+        <section id="about" className="w-full py-12I'd be happy to go over all the code for your happyux.ai landing page and help address the errors you encountered during testing. Let's review the main components of your project and make sure everything is working correctly.
 
 
 
-Here are the essential files you'll need for a smooth deployment on Vercel:
-
-1. First, let's create the main page file:
+Let's start with the main page component. I'll provide the complete code for `app/page.tsx`, and then we'll go through other essential files:
 
 ```tsx project="HappyUX Landing Page" file="app/page.tsx" type="react"
 'use client'
@@ -1260,70 +1257,62 @@ export default function Page() {
             >
               <h2 id="about-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">About happyux.ai</h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                We're a team of passionate UX designers, AI specialists, and strategists dedicated to creating intelligent digital experiences for innovative startups and businesses.
+                We're a team of passionate UX designers, AI specialists, and tech enthusiasts dedicated to revolutionizing digital experiences.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                transition={{ duration: 0.5 }}
               >
                 <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
                 <p className="text-muted-foreground mb-6">
-                  At happyux.ai, our mission is to transform the digital landscape by creating AI-powered user experiences that not only meet business objectives but also bring joy and satisfaction to users. We believe that the synergy of AI and UX design has the power to make the world a little bit smarter and happier, one interaction at a time.
+                  At happyux.ai, we're on a mission to bridge the gap between human-centered design and artificial intelligence. We believe that by harnessing the power of AI, we can create digital experiences that are not only beautiful and intuitive but also intelligent and adaptive.
                 </p>
                 <h3 className="text-2xl font-bold mb-4">Our Approach</h3>
-                <p className="text-muted-foreground">
-                  We combine AI-driven insights with creative problem-solving to deliver UX solutions that are both innovative and effective. Our collaborative approach ensures that we work closely with our clients, leveraging the power of AI to understand their unique challenges and goals, creating tailored solutions that drive real results and adapt to changing user needs.
+                <p className="text-muted-foreground mb-6">
+                  We combine cutting-edge AI technology with years of UX design expertise to deliver solutions that are:
                 </p>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Data-driven yet human-centered</li>
+                  <li>Innovative yet user-friendly</li>
+                  <li>Efficient yet thorough</li>
+                  <li>Scalable yet personalized</li>
+                </ul>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
+                transition={{ duration: 0.5 }}
                 className="relative"
               >
                 <Image
                   src="/placeholder.svg?height=400&width=600"
                   width={600}
                   height={400}
-                  alt="happyux.ai team collaborating with AI tools on a UX design project"
+                  alt="Team of UX designers and AI specialists collaborating on a project"
                   className="rounded-lg shadow-lg"
                 />
-                <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
-                  <p className="font-bold text-lg">AI-Powered Innovation</p>
-                  <p className="text-sm">Creating Intelligent User Experiences</p>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
               </motion.div>
             </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-16 text-center"
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-12 text-center"
             >
-              <h3 className="text-2xl font-bold mb-6">Our Values</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                  { title: "AI-Enhanced User-Centricity", description: "We leverage AI to deeply understand and anticipate user needs, creating experiences that truly resonate." },
-                  { title: "Ethical AI Innovation", description: "We push the boundaries of AI in UX while maintaining a strong commitment to ethical AI practices and user privacy." },
-                  { title: "Human-AI Collaboration", description: "We believe the best results come from the synergy between human creativity and AI capabilities." },
-                ].map((value, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardContent className="p-6">
-                      <h4 className="text-xl font-semibold mb-2">{value.title}</h4>
-                      <p className="text-muted-foreground">{value.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <Button size="lg" onClick={() => scrollToSection('contact')}>
+                Join Us in Shaping the Future of UX
+                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+              </Button>
             </motion.div>
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted" aria-labelledby="contact-title">
+        {/* Contact Form Section */}
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="contact-title">
           <div className="container px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1331,45 +1320,61 @@ export default function Page() {
               transition={{ duration: 0.5 }}
               className="text-center mb-12"
             >
-              <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Contact Us</h2>
+              <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Get in Touch</h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Let's discuss your project and how we can help you create exceptional digital experiences.
+                Ready to elevate your UX with AI? Let's start a conversation about your project.
               </p>
             </motion.div>
-            <Card className="w-full max-w-2xl mx-auto dark:bg-black-900">
-              <CardContent className="p-6">
-                {isSubmitted ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="text-center space-y-4"
-                  >
-                    <h3 className="text-2xl font-bold">Thank You!</h3>
-                    <p className="text-lg text-muted-foreground">Your message has been sent successfully. We'll get back to you soon.</p>
-                    <Button
-                      onClick={() => {
-                        setFormData({ name: '', email: '', projectTypes: [], message: '' })
-                        setIsSubmitted(false)
-                      }}
-                      className="mt-4"
-                    >
-                      Send Another Message
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name" className="text-muted-foreground">Your Name</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="dark:bg-black-900">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-bold">Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center">
+                      <MapPin className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>123 AI Boulevard, Tech City, TC 12345</p>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>+1 (555) 123-4567</p>
+                    </div>
+                    <div className="flex items-center">
+                      <Mail className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>hello@happyux.ai</p>
+                    </div>
+                    <div className="flex items-center">
+                      <MessageSquare className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>Live chat available 24/7</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="dark:bg-black-900">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-bold">Send us a Message</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div>
+                        <Label htmlFor="name">Name</Label>
                         <Input
                           id="name"
                           name="name"
-                          placeholder="Enter your name"
-                          className={`bg-background border-input ${errors.name ? 'border-red-500' : ''} focus:ring-2 focus:ring-white focus:border-white`}
+                          placeholder="Your Name"
                           value={formData.name}
                           onChange={handleInputChange}
-                          disabled={isSubmitting}
+                          className={errors.name ? 'border-red-500' : ''}
                           aria-invalid={errors.name ? 'true' : 'false'}
                           aria-describedby={errors.name ? 'name-error' : undefined}
                         />
@@ -1377,17 +1382,16 @@ export default function Page() {
                           <p id="name-error" className="text-sm text-red-500 mt-1">{errors.name}</p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email" className="text-muted-foreground">Your Email</Label>
+                      <div>
+                        <Label htmlFor="email">Email</Label>
                         <Input
                           id="email"
                           name="email"
                           type="email"
-                          placeholder="Enter your email"
-                          className={`bg-background border-input ${errors.email ? 'border-red-500' : ''} focus:ring-2 focus:ring-white focus:border-white`}
+                          placeholder="your@email.com"
                           value={formData.email}
                           onChange={handleInputChange}
-                          disabled={isSubmitting}
+                          className={errors.email ? 'border-red-500' : ''}
                           aria-invalid={errors.email ? 'true' : 'false'}
                           aria-describedby={errors.email ? 'email-error' : undefined}
                         />
@@ -1395,88 +1399,136 @@ export default function Page() {
                           <p id="email-error" className="text-sm text-red-500 mt-1">{errors.email}</p>
                         )}
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-muted-foreground">Project Type (Select all that apply)</Label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {projectTypeOptions.map((option) => (
-                          <div key={option} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={option.toLowerCase().replace(/\s+/g, '-')}
-                              checked={formData.projectTypes.includes(option)}
-                              onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, option)}
-                              className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus:ring-2 focus:ring-white"
-                              disabled={isSubmitting}
-                            />
-                            <Label
-                              htmlFor={option.toLowerCase().replace(/\s+/g, '-')}
-                              className="text-muted-foreground"
-                            >
-                              {option}
-                            </Label>
-                          </div>
-                        ))}
+                      <div>
+                        <Label>Project Type</Label>
+                        <div className="grid grid-cols-2 gap-4 mt-2">
+                          {projectTypeOptions.map((type) => (
+                            <div key={type} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={type}
+                                checked={formData.projectTypes.includes(type)}
+                                onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, type)}
+                              />
+                              <Label htmlFor={type}>{type}</Label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.projectTypes && (
+                          <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
+                        )}
                       </div>
-                      {errors.projectTypes && (
-                        <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message" className="text-muted-foreground">Your Message</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="Enter your message"
-                        className={`bg-background border-input min-h-[120px] ${errors.message ? 'border-red-500' : ''} focus:ring-2 focus:ring-white focus:border-white`}
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        disabled={isSubmitting}
-                        aria-invalid={errors.message ? 'true' : 'false'}
-                        aria-describedby={errors.message ? 'message-error' : undefined}
-                      />
-                      {errors.message && (
-                        <p id="message-error" className="text-sm text-red-500 mt-1">{errors.message}</p>
-                      )}
-                    </div>
-
-                    {errors.submit && (
-                      <p className="text-sm text-red-500 mt-4">{errors.submit}</p>
+                      <div>
+                        <Label htmlFor="message">Message</Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          placeholder="Tell us about your project..."
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          className={errors.message ? 'border-red-500' : ''}
+                          aria-invalid={errors.message ? 'true' : 'false'}
+                          aria-describedby={errors.message ? 'message-error' : undefined}
+                        />
+                        {errors.message && (
+                          <p id="message-error" className="text-sm text-red-500 mt-1">{errors.message}</p>
+                        )}
+                      </div>
+                      <Button type="submit" className="w-full" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <>
+                            <span className="animate-spin mr-2">⏳</span>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Message
+                            <Send className="ml-2 h-5 w-5" aria-hidden="true" />
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                    {isSubmitted && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
+                      >
+                        <p className="font-semibold">Thank you for your message!</p>
+                        <p>We'll get back to you as soon as possible.</p>
+                      </motion.div>
                     )}
-
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Sending...' : 'Send Message'}
-                      <Send className="ml-2 h-4 w-4" />
-                    </Button>
-                  </form>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
           </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex flex-col items-center justify-between space-y-4 py-10 md:h-24 md:flex-row md:py-0">
-          <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-            <SmilePlus className="h-6 w-6 text-primary" aria-hidden="true" />
-            <p className="text-center text-sm leading-loose md:text-left">
-              Built with ❤️ by happyux.ai. © 2024 happyux.ai. All rights reserved.
-            </p>
+      <footer className="w-full py-6 bg-background border-t">
+        <div className="container px-4 md:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Services</h3>
+              <ul className="space-y-2">
+                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">AI-Enhanced User Research</Link></li>
+                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">Intelligent Experience Design</Link></li>
+                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">AI-Driven Visual UI Design</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Company</h3>
+              <ul className="space-y-2">
+                <li><Link href="#about" className="text-sm text-muted-foreground hover:text-primary">About Us</Link></li>
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Careers</Link></li>
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Blog</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Resources</h3>
+              <ul className="space-y-2">
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Documentation</Link></li>
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Case Studies</Link></li>
+                <li><Link href="#faq" className="text-sm text-muted-foreground hover:text-primary">FAQ</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Legal</h3>
+              <ul className="space-y-2">
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Terms of Service</Link></li>
+                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Cookie Policy</Link></li>
+              </ul>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <a href="#" className="text-muted-foreground hover:text-primary">
-              Terms
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-primary">
-              Privacy Policy
-            </a>
+          <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <span className="sr-only">Facebook</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <span className="sr-only">Twitter</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                </svg>
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <span className="sr-only">LinkedIn</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </Link>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4 md:mt-0">
+              © 2024 happyux.ai. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
