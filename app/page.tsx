@@ -27,29 +27,6 @@ type FormErrors = {
   [K in keyof FormData]?: string
 }
 
-type SectionWrapperProps = {
-  children: React.ReactNode
-  id: string
-}
-
-type SectionHeaderProps = {
-  title: string
-  subtitle: string
-}
-
-const SectionWrapper = ({ children, id }: SectionWrapperProps) => (
-  <section id={id} className="py-24">
-    {children}
-  </section>
-)
-
-const SectionHeader = ({ title, subtitle }: SectionHeaderProps) => (
-  <div className="text-center mb-12">
-    <h2 className="text-3xl font-bold mb-4">{title}</h2>
-    <p className="text-zinc-400">{subtitle}</p>
-  </div>
-)
-
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -815,7 +792,7 @@ export default function Home() {
         </section>
 
         {/* Contact Form Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="contact-title">
+        <SectionWrapper id="contact">
           <div className="container px-4 md:px-6">
             <div
               className="text-center mb-12"
@@ -952,8 +929,8 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </SectionWrapper>
+        </SectionWrapper>
+      </div>
     </div>
   );
 }
