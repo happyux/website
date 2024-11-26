@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from "next/link"
@@ -164,7 +165,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black">
       <header className="fixed top-0 w-full z-50 border-b border-zinc-800 bg-black">
         <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
@@ -953,6 +954,6 @@ export default function Home() {
           </div>
         </div>
       </SectionWrapper>
-    </main>
+    </div>
   );
 }
