@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { SmilePlus, Search, Palette, Layout, Users, ArrowRight, CheckCircle, Menu, X, Phone, Mail, MessageSquare, Send, Lightbulb, Microscope, PenTool, Repeat, Eye, Zap, MapPin, ChevronDown, PlusCircle, Rocket, Clock, Sparkles } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 type FormData = {
   name: string
@@ -38,6 +39,14 @@ export default function Home() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const projectTypeOptions = [
+    "Website Redesign",
+    "Mobile App",
+    "AI Integration",
+    "UX Audit"
+  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -115,6 +124,18 @@ export default function Home() {
     // Add 'dark' class to the <html> element to enable dark mode by default
     document.documentElement.classList.add('dark')
   }, [])
+
+  const validateForm = () => {
+    const newErrors: FormErrors = {};
+    
+    if (!formData.name) newErrors.name = "Name is required";
+    if (!formData.email) newErrors.email = "Email is required";
+    if (formData.projectTypes.length === 0) newErrors.projectTypes = "Please select at least one project type";
+    if (!formData.message) newErrors.message = "Message is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   return (
     <main className="min-h-screen bg-black">
@@ -743,13 +764,8 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
+              </div>
+              <div>
                 <Image
                   src="/placeholder.svg?height=400&width=600"
                   width={600}
@@ -758,42 +774,32 @@ export default function Home() {
                   className="rounded-lg shadow-lg"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
-              </motion.div>
+              </div>
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+            <div
               className="mt-12 text-center"
             >
               <Button size="lg" onClick={() => scrollToSection('contact')}>
                 Join Us in Shaping the Future of UX
                 <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
               </Button>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         {/* Contact Form Section */}
         <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="contact-title">
           <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+            <div
               className="text-center mb-12"
             >
               <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Get in Touch</h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                 Ready to elevate your UX with AI? Let's start a conversation about your project.
               </p>
-            </motion.div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div>
                 <Card className="dark:bg-black-900">
                   <CardHeader>
                     <CardTitle className="text-2xl font-bold">Contact Information</CardTitle>
@@ -817,12 +823,8 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              </div>
+              <div>
                 <Card className="dark:bg-black-900">
                   <CardHeader>
                     <CardTitle className="text-2xl font-bold">Send us a Message</CardTitle>
@@ -911,19 +913,16 @@ export default function Home() {
                       </Button>
                     </form>
                     {isSubmitted && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                      <div
                         className="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
                       >
                         <p className="font-semibold">Thank you for your message!</p>
                         <p>We'll get back to you as soon as possible.</p>
-                      </motion.div>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
