@@ -1,83 +1,26 @@
 'use client'
-import Link from 'next/link'
-import { Menu, SmilePlus, Check } from 'lucide-react'
-import { useState } from 'react'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PlusCircle } from 'lucide-react'
-import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
-import { MapPin, Phone, Mail, MessageSquare, Send } from 'lucide-react'
-import { Label } from "@/components/ui/label"
+
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
+import { SmilePlus, Search, Palette, Layout, Users, ArrowRight, CheckCircle, Menu, X, Phone, Mail, MessageSquare, Send, Lightbulb, Microscope, PenTool, Repeat, Eye, Zap, MapPin, ChevronDown, PlusCircle, Rocket, Clock, Sparkles } from 'lucide-react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
-const projectTypeOptions = [
-  "UX Research",
-  "UI Design",
-  "Product Strategy",
-  "Design System"
-];
+type FormData = {
+  name: string
+  email: string
+  projectTypes: string[]
+  message: string
+}
 
-// Common Section Wrapper Component
-const SectionWrapper = ({ id, children }: { id: string, children: React.ReactNode }) => (
-  <section 
-    id={id} 
-    className="relative min-h-screen py-32 bg-black"
-  >
-    {/* Gradient Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/50 to-black pointer-events-none" />
-    
-    {/* Content */}
-    <div className="relative z-10">
-      {children}
-    </div>
-  </section>
-);
-
-// Common Section Header Component
-const SectionHeader = ({ title, subtitle }: { title: string, subtitle: React.ReactNode }) => (
-  <div className="text-center max-w-3xl mx-auto mb-20">
-    <h2 className="text-5xl font-bold text-zinc-100 mb-6">
-      {title}
-    </h2>
-    <p className="text-lg text-zinc-400">
-      {subtitle}
-    </p>
-  </div>
-);
-
-// Common Card Styles
-const cardStyles = {
-  wrapper: "p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors",
-  iconWrapper: "bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6",
-  icon: "w-6 h-6 text-zinc-100",
-  title: "text-xl font-semibold text-zinc-100 mb-3",
-  description: "text-zinc-400",
-  list: "space-y-3",
-  listItem: "flex items-center text-sm text-zinc-400",
-  listItemIcon: "w-4 h-4 mr-2 text-zinc-500"
-};
-
-const buttonStyles = {
-  primary: "inline-flex items-center justify-center px-8 py-4 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-all duration-300 group",
-  icon: "ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
-};
-
-const inputStyles = {
-  base: "mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500",
-  error: "border-red-500",
-  label: "text-zinc-200",
-  errorText: "text-sm text-red-500 mt-1"
-};
+type FormErrors = {
+  [K in keyof FormData]?: string
+}
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -113,49 +56,65 @@ export default function Home() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+    if (!validateForm()) return
+
+    setIsSubmitting(true)
+
     try {
-      setIsSubmitting(true);
-      
-      // Validate form data
-      if (!formData.name || !formData.email || !formData.message) {
-        throw new Error('Please fill in all required fields');
-      }
-
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
-      }
-
-      // Success handling
-      setFormData({
-        name: '',
-        email: '',
-        projectTypes: [],
-        message: ''
-      });
-      
-      setIsSubmitted(true);
-      toast.success('Message sent successfully!');
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      setIsSubmitted(true)
     } catch (error) {
-      // Error handling
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      console.error('Form submission error:', errorMessage);
-      toast.error(errorMessage);
+      console.error('Error submitting form:', error)
+      setErrors(prev => ({ ...prev, submit: 'An error occurred. Please try again.' }))
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
+
+  const scrollToSection = useCallback((sectionId: string) => {
+    const section = document.getElementById(sectionId)
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' })
+    }
+    setIsMenuOpen(false)
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY
+      const sections = ['services', 'startup', 'process', 'faq', 'about', 'contact']
+      
+      sections.forEach((sectionId) => {
+        const section = document.getElementById(sectionId)
+        if (section) {
+          const sectionTop = section.offsetTop - 100
+          const sectionBottom = sectionTop + section.offsetHeight
+          
+          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+            const link = document.querySelector(`[data-section="${sectionId}"]`)
+            if (link) {
+              link.classList.add('text-primary')
+            }
+          } else {
+            const link = document.querySelector(`[data-section="${sectionId}"]`)
+            if (link) {
+              link.classList.remove('text-primary')
+            }
+          }
+        }
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    // Add 'dark' class to the <html> element to enable dark mode by default
+    document.documentElement.classList.add('dark')
+  }, [])
 
   return (
     <main className="min-h-screen bg-black">
@@ -784,162 +743,187 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="relative"
+              >
+                <Image
+                  src="/placeholder.svg?height=400&width=600"
+                  width={600}
+                  height={400}
+                  alt="Team of UX designers and AI specialists collaborating on a project"
+                  className="rounded-lg shadow-lg"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
+              </motion.div>
             </div>
-
-            {/* Right Column - Image with enhanced effects */}
-            <div className="relative h-full group">
-              <div className="absolute inset-0 rounded-2xl overflow-hidden bg-zinc-900/30 border border-zinc-800/50
-                  backdrop-blur-sm hover:bg-zinc-900/40 hover:border-zinc-700/50 transition-all duration-300">
-                <div className="relative w-full h-full">
-                  <Image
-                    src="/happyux_image12.jpg"
-                    alt="Team of UX designers and AI specialists collaborating"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/40 to-transparent"></div>
-                </div>
-                
-                {/* Enhanced Image Caption */}
-                <div className="absolute bottom-6 left-6 right-6 p-4 bg-black/80 rounded-lg 
-                    backdrop-blur-sm border border-zinc-800/50 transform transition-all duration-300
-                    group-hover:translate-y-[-4px] group-hover:border-zinc-700/50">
-                  <p className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
-                    Our team collaborating on AI-driven UX solutions
-                  </p>
-                </div>
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-12 text-center"
+            >
+              <Button size="lg" onClick={() => scrollToSection('contact')}>
+                Join Us in Shaping the Future of UX
+                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+              </Button>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Contact Section */}
-      <SectionWrapper id="contact">
-        <div className="max-w-[1400px] mx-auto px-6">
-          {/* Section Header */}
-          <SectionHeader 
-            title="Get in Touch" 
-            subtitle={
-              <>
-                Ready to elevate your UX with AI? We're based in Nashville, TN USA, 
-                serving clients globally. Let's start a conversation about your project.
-              </>
-            } 
-          />
-
-          {/* Contact Form - Now Centered */}
-          <div className="max-w-xl mx-auto">
-            <div className="p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800/50">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="name" className="text-zinc-200">Name</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder="Your Name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 ${
-                      errors.name ? 'border-red-500' : ''
-                    }`}
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-red-500 mt-1">{errors.name}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="email" className="text-zinc-200">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 ${
-                      errors.email ? 'border-red-500' : ''
-                    }`}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-zinc-200">Project Type</Label>
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    {projectTypeOptions.map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={type}
-                          checked={formData.projectTypes.includes(type)}
-                          onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, type)}
-                          className="h-5 w-5 border-2 border-zinc-700 rounded 
-                            data-[state=checked]:bg-zinc-900 
-                            data-[state=checked]:border-white 
-                            transition-all
-                            hover:border-zinc-500"
-                          icon={<Check className="h-4 w-4 text-white" />}
+        {/* Contact Form Section */}
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="contact-title">
+          <div className="container px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-12"
+            >
+              <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Get in Touch</h2>
+              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                Ready to elevate your UX with AI? Let's start a conversation about your project.
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="dark:bg-black-900">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-bold">Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center">
+                      <MapPin className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>123 AI Boulevard, Tech City, TC 12345</p>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>+1 (555) 123-4567</p>
+                    </div>
+                    <div className="flex items-center">
+                      <Mail className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>hello@happyux.ai</p>
+                    </div>
+                    <div className="flex items-center">
+                      <MessageSquare className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
+                      <p>Live chat available 24/7</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="dark:bg-black-900">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-bold">Send us a Message</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div>
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          placeholder="Your Name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className={errors.name ? 'border-red-500' : ''}
+                          aria-invalid={errors.name ? 'true' : 'false'}
+                          aria-describedby={errors.name ? 'name-error' : undefined}
                         />
-                        <Label htmlFor={type} className="text-zinc-400">{type}</Label>
+                        {errors.name && (
+                          <p id="name-error" className="text-sm text-red-500 mt-1">{errors.name}</p>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  {errors.projectTypes && (
-                    <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="message" className="text-zinc-200">Message</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Tell us about your project..."
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 min-h-[120px] ${
-                      errors.message ? 'border-red-500' : ''
-                    }`}
-                  />
-                  {errors.message && (
-                    <p className="text-sm text-red-500 mt-1">{errors.message}</p>
-                  )}
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-white text-black hover:bg-zinc-200 transition-colors py-6 text-lg font-medium"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                      Sending...
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      Send Message
-                      <Send className="h-5 w-5" />
-                    </span>
-                  )}
-                </Button>
-              </form>
-
-              {isSubmitted && (
-                <div className="mt-6 p-4 bg-zinc-800/50 border border-green-500/50 rounded-lg">
-                  <p className="text-green-400 font-semibold">Thank you for your message!</p>
-                  <p className="text-zinc-400">We'll get back to you as soon as possible.</p>
-                </div>
-              )}
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="your@email.com"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className={errors.email ? 'border-red-500' : ''}
+                          aria-invalid={errors.email ? 'true' : 'false'}
+                          aria-describedby={errors.email ? 'email-error' : undefined}
+                        />
+                        {errors.email && (
+                          <p id="email-error" className="text-sm text-red-500 mt-1">{errors.email}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label>Project Type</Label>
+                        <div className="grid grid-cols-2 gap-4 mt-2">
+                          {projectTypeOptions.map((type) => (
+                            <div key={type} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={type}
+                                checked={formData.projectTypes.includes(type)}
+                                onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, type)}
+                              />
+                              <Label htmlFor={type}>{type}</Label>
+                            </div>
+                          ))}
+                        </div>
+                        {errors.projectTypes && (
+                          <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="message">Message</Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          placeholder="Tell us about your project..."
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          className={errors.message ? 'border-red-500' : ''}
+                          aria-invalid={errors.message ? 'true' : 'false'}
+                          aria-describedby={errors.message ? 'message-error' : undefined}
+                        />
+                        {errors.message && (
+                          <p id="message-error" className="text-sm text-red-500 mt-1">{errors.message}</p>
+                        )}
+                      </div>
+                      <Button type="submit" className="w-full" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <>
+                            <span className="animate-spin mr-2">⏳</span>
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            Send Message
+                            <Send className="ml-2 h-5 w-5" aria-hidden="true" />
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                    {isSubmitted && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
+                      >
+                        <p className="font-semibold">Thank you for your message!</p>
+                        <p>We'll get back to you as soon as possible.</p>
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
           </div>
         </div>

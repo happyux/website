@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@emailjs/browser": "^4.4.1",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -16,16 +17,27 @@
     "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@sendgrid/mail": "^8.1.4",
+=======
+    "@radix-ui/react-accordion": "^1.2.1",
+    "@radix-ui/react-checkbox": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+>>>>>>> 847ebfc8c3d06c34bbdf55882055a7229747673e
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.292.0",
     "next": "^15.0.3",
+<<<<<<< HEAD
     "nodemailer": "^6.9.16",
     "react": "^18",
     "react-dom": "^18",
     "resend": "^4.0.1",
     "sonner": "^1.7.0",
+=======
+    "react": "^18",
+    "react-dom": "^18",
+>>>>>>> 847ebfc8c3d06c34bbdf55882055a7229747673e
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7"
   },
