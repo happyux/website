@@ -11,6 +11,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { SmilePlus, Search, Palette, Layout, Users, ArrowRight, CheckCircle, Menu, X, Phone, Mail, MessageSquare, Send, Lightbulb, Microscope, PenTool, Repeat, Eye, Zap, MapPin, ChevronDown, PlusCircle, Rocket, Clock, Sparkles } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { SectionWrapper } from '@/components/section-wrapper'
+import { SectionHeader } from '@/components/section-header'
+import { Label } from "@/components/ui/label"
 
 type FormData = {
   name: string
@@ -22,6 +25,29 @@ type FormData = {
 type FormErrors = {
   [K in keyof FormData]?: string
 }
+
+type SectionWrapperProps = {
+  children: React.ReactNode
+  id: string
+}
+
+type SectionHeaderProps = {
+  title: string
+  subtitle: string
+}
+
+const SectionWrapper = ({ children, id }: SectionWrapperProps) => (
+  <section id={id} className="py-24">
+    {children}
+  </section>
+)
+
+const SectionHeader = ({ title, subtitle }: SectionHeaderProps) => (
+  <div className="text-center mb-12">
+    <h2 className="text-3xl font-bold mb-4">{title}</h2>
+    <p className="text-zinc-400">{subtitle}</p>
+  </div>
+)
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
