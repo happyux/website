@@ -28,8 +28,15 @@ const projectTypeOptions = [
 
 // Common Section Wrapper Component
 const SectionWrapper = ({ id, children }: { id: string, children: React.ReactNode }) => (
-  <section id={id} className="min-h-screen py-32 bg-black">
-    <div className="max-w-[1400px] mx-auto px-6">
+  <section 
+    id={id} 
+    className="relative min-h-screen py-32 bg-black"
+  >
+    {/* Gradient Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/50 to-black pointer-events-none" />
+    
+    {/* Content */}
+    <div className="relative z-10">
       {children}
     </div>
   </section>
@@ -213,7 +220,15 @@ export default function Home() {
 
           {/* Right Column - Image/Visual with adjusted height */}
           <div className="flex items-center">
-            <div className="bg-zinc-100 rounded-2xl w-full h-[400px]"></div>
+            <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+              <Image
+                src="/happyux.gif"
+                alt="AI UX Design Animation"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -742,7 +757,7 @@ export default function Home() {
                   backdrop-blur-sm hover:bg-zinc-900/40 hover:border-zinc-700/50 transition-all duration-300">
                 <div className="relative w-full h-full">
                   <Image
-                    src="/placeholder.svg"
+                    src="/happyux_image12.jpg"
                     alt="Team of UX designers and AI specialists collaborating"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
