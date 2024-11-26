@@ -1,12 +1,15 @@
+import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: 'happyux.ai - AI-Powered UX Design for Tech Startups',
-  description: 'Elevate your digital products with our cutting-edge AI solutions that blend data-driven insights with human creativity. Rapid delivery for tech startups.',
+  description: 'AI-powered UX design services for tech startups. Rapid innovation, intelligent experiences.',
 }
 
 export default function RootLayout({
@@ -15,8 +18,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${inter.variable}`}>
+      <body className="font-sans">
+        {children}
+      </body>
     </html>
   )
 }
