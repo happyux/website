@@ -1,1537 +1,949 @@
 'use client'
-
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import Link from 'next/link'
+import { Menu, SmilePlus, Check } from 'lucide-react'
+import { useState } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PlusCircle } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
+import { MapPin, Phone, Mail, MessageSquare, Send } from 'lucide-react'
+import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { SmilePlus, Search, Palette, Layout, Users, ArrowRight, CheckCircle, Menu, X, Phone, Mail, MessageSquare, Send, Lightbulb, Microscope, PenTool, Repeat, Eye, Zap, MapPin, ChevronDown, PlusCircle, Rocket, Clock, Sparkles } from 'lucide-react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-
-type FormData = {
-  name: string
-  email: string
-  projectTypes: string[]
-  message: string
-}
-
-type FormErrors = {
-  [K in keyof FormData]?: string
-}
-
-export default function Page() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    projectTypes: [],
-    message: ''
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const projectTypeOptions = [
-    'Website Redesign',
-    'Mobile App Design',
-    'Branding & UI',
-    'Other'
-  ]
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    setErrors(prev => ({ ...prev, [name]: '' }))
-  }
-
-  const handleProjectTypeChange = (checked: boolean, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      projectTypes: checked
-        ? [...prev.projectTypes, value]
-        : prev.projectTypes.filter(type => type !== value)
-    }))
-    setErrors(prev => ({ ...prev, projectTypes: '' }))
-  }
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
-
-    if (!formData.name.trim()) newErrors.name = 'Name is required'
-    if (!formData.email.trim()) newErrors.email = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid'
-    if (formData.projectTypes.length === 0) newErrors.projectTypes = 'Please select at least one project type'
-    if (!formData.message.trim()) newErrors.message = 'Message is required'
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validateForm()) return
-
-    setIsSubmitting(true)
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      setIsSubmitted(true)
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      setErrors(prev => ({ ...prev, submit: 'An error occurred. Please try again.' }))
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const scrollToSection = useCallback((sectionId: string) => {
-    const section = document.getElementById(sectionId)
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' })
-    }
-    setIsMenuOpen(false)
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const sections = ['services', 'startup', 'process', 'faq', 'about', 'contact']
-      
-      sections.forEach((sectionId) => {
-        const section = document.getElementById(sectionId)
-        if (section) {
-          const sectionTop = section.offsetTop - 100
-          const sectionBottom = sectionTop + section.offsetHeight
-          
-          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            const link = document.querySelector(`[data-section="${sectionId}"]`)
-            if (link) {
-              link.classList.add('text-primary')
-            }
-          } else {
-            const link = document.querySelector(`[data-section="${sectionId}"]`)
-            if (link) {
-              link.classList.remove('text-primary')
-            }
-          }
-        }
-      })
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    // Add 'dark' class to the <html> element to enable dark mode by default
-    document.documentElement.classList.add('dark')
-  }, [])
-
-  return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground dark">
-      {/* Skip to main content link */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md">
-        Skip to main content
-      </a>
-
-      {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center px-4">
-          <Link className="flex items-center justify-center" href="#" aria-label="happyux.ai home">
-            <div className="relative group">
-              <SmilePlus className="h-6 w-6 text-primary transition-colors duration-300" aria-hidden="true" />
-              <SmilePlus className="absolute inset-0 h-6 w-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
-            </div>
-            <span className="ml-2 text-2xl font-bold text-primary">happyux.ai</span>
-          </Link>
-          <nav className="hidden md:flex ml-auto gap-6" aria-label="Main Navigation">
-            {["Services", "For Startups", "Process", "FAQ", "About", "Contact"].map((item) => (
-              <button
-                key={item}
-                className="text-sm font-medium hover:text-primary transition-colors cursor-pointer relative group focus:outline-none focus:ring-2 focus:ring-primary"
-                onClick={() => scrollToSection(item.toLowerCase().replace(' ', ''))}
-                data-section={item.toLowerCase().replace(' ', '')}
-              >
-                {item}
-                <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
-              </button>
-            ))}
-          </nav>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden ml-auto"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
-          >
-            <span className="sr-only">{isMenuOpen ? "Close menu" : "Open menu"}</span>
-            {isMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-          </Button>
-        </div>
-      </header>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-16 left-0 right-0 bg-background border-b z-30"
-          >
-            <nav className="container py-4" aria-label="Mobile Navigation">
-              {["Services", "For Startups", "Process", "FAQ", "About", "Contact"].map((item) => (
-                <button
-                  key={item}
-                  className="block w-full text-left py-2 text-sm font-medium hover:text-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-                  onClick={() => scrollToSection(item.toLowerCase().replace(' ', ''))}
-                  data-section={item.toLowerCase().replace(' ', '')}
-                >
-                  {item}
-                </button>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
-      <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-background to-background/80">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <motion.div
-                className="flex flex-col justify-center space-y-4"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-foreground">
-                    AI-Powered UX: Rapid Innovation for Tech Startups
-                  </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    happyux.ai combines cutting-edge AI technology with human-centered design to create intelligent digital experiences that adapt, delight users, and drive business growth. Perfect for tech startups looking to revamp their UI/UX quickly.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-4 min-[400px]:flex-row">
-                  <Button size="lg" className="w-full sm:w-auto" onClick={() => scrollToSection('services')}>
-                    Explore Our AI-Driven Services
-                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto" onClick={() => scrollToSection('startup')}>
-                    Tech Startup Solutions
-                    <Rocket className="ml-2 h-5 w-5" aria-hidden="true" />
-                  </Button>
-                </div>
-              </motion.div>
-              <motion.div
-                className="mx-auto aspect-video overflow-hidden rounded-xl sm:w-full lg:order-last"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  width={600}
-                  height={400}
-                  alt="AI-powered UX design process visualization showing a team collaborating with AI tools on a digital project"
-                  className="object-cover object-center w-full h-full"
-                />
-              </motion.div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex justify-center mt-12"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="animate-bounce"
-                onClick={() => scrollToSection('services')}
-                aria-label="Scroll to services section"
-              >
-                <ChevronDown className="h-6 w-6" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Services Section */}
-        <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="services-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="services-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Our AI-Powered Services</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Elevate your digital products with our cutting-edge AI solutions that blend data-driven insights with human creativity. Rapid delivery for tech startups and established businesses alike.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {[
-                {
-                  icon: Search,
-                  title: "AI-Enhanced User Research",
-                  description: "Uncover deep insights about your users' needs, behaviors, and pain points using advanced AI analytics.",
-                  features: [
-                    "AI-powered User Interviews & Surveys",
-                    "Predictive Usability Testing",
-                    "Machine Learning Data Analysis",
-                    "AI-assisted Persona Development"
-                  ],
-                },
-                {
-                  icon: Eye,
-                  title: "Intelligent Experience Design",
-                  description: "Create adaptive and intuitive user experiences that learn and evolve with your customers.",
-                  features: [
-                    "AI-optimized User Flows",
-                    "Adaptive Information Architecture",
-                    "Intelligent Wireframing & Prototyping",
-                    "AI-enhanced Interaction Design"
-                  ],
-                },
-                {
-                  icon: Palette,
-                  title: "AI-Driven Visual UI Design",
-                  description: "Design visually stunning interfaces that dynamically align with your brand and user preferences.",
-                  features: [
-                    "AI-generated UI Component Creation",
-                    "Adaptive Design System Development",
-                    "AI-powered Visual Hierarchy Optimization",
-                    "Intelligent Responsive Design"
-                  ],
-                },
-              ].map((service, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full"
-                >
-                  <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                        <service.icon className="h-6 w-6 text-primary" aria-hidden="true" />
-                      </div>
-                      <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
-                      <CardDescription>{service.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                      <ul className="space-y-2" aria-label={`${service.title} features`}>
-                        {service.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center">
-                            <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" aria-hidden="true" />
-                            <span className="text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* For Startups Section */}
-        <section id="startup" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="startup-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="startup-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Supercharge Your Tech Startup</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Revamp your UI/UX and accelerate your growth with our AI-powered design solutions tailored for tech startups.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {[
-                {
-                  icon: Rocket,
-                  title: "Rapid Prototyping",
-                  description: "Go from idea to interactive prototype in days, not weeks. Our AI-assisted design process accelerates your product development cycle.",
-                },
-                {
-                  icon: Users,
-                  title: "User-Centric Design",
-                  description: "Leverage AI-driven user research to create experiences that resonate with your target audience and drive engagement.",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Competitive Edge",
-                  description: "Stand out in the crowded tech landscape with cutting-edge UI/UX that adapts to user behavior and market trends.",
-                },
-                {
-                  icon: Clock,
-                  title: "Quick Turnaround",
-                  description: "We understand the pace of startups. Our streamlined process ensures fast delivery without compromising on quality.",
-                },
-                {
-                  icon: Zap,
-                  title: "Scalable Design Systems",
-                  description: "Build a foundation that grows with your startup. Our AI-powered design systems adapt as your product evolves.",
-                },
-                {
-                  icon: Lightbulb,
-                  title: "Innovation-Driven",
-                  description: "Stay ahead of the curve with AI-generated design concepts that push the boundaries of user experience.",
-                },
-              ].map(({ icon: Icon, title, description }, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full"
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                        <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
-                      </div>
-                      <CardTitle className="text-xl mb-2">{title}</CardTitle>
-                      <CardDescription>{description}</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Accelerate Your Startup's UX
-                <Rocket className="ml-2 h-5 w-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Process Section */}
-        <section id="process" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="process-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="process-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our AI-Driven Design Process</h2>
-              <p className="mt-4 text-xl text-muted-foreground">
-                Experience the future of UX design with our innovative AI-powered approach
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12">
-              {[
-                {
-                  id: "discovery",
-                  title: "AI-Powered Discovery",
-                  icon: Lightbulb,
-                  description: "We use AI to analyze your business goals, user needs, and market landscape for deeper insights.",
-                  details: [
-                    "AI-driven stakeholder interview analysis",
-                    "Predictive data insights",
-                    "AI-assisted KPI identification",
-                    "Intelligent project scope definition"
-                  ]
-                },
-                {
-                  id: "research",
-                  title: "AI-Enhanced User Research",
-                  icon: Microscope,
-                  description: "Our AI tools conduct thorough user research to inform design decisions and validate assumptions.",
-                  details: [
-                    "AI-powered user interviews and survey analysis",
-                    "Machine learning-driven persona creation",
-                    "AI-assisted competitive analysis",
-                    "Predictive pain point and opportunity identification"
-                  ]
-                },
-                {
-                  id: "design",
-                  title: "AI-Augmented Design",
-                  icon: PenTool,
-                  description: "We create intuitive interfaces and seamless user experiences using AI-powered design tools.",
-                  details: [
-                    "AI-optimized information architecture",
-                    "Generative AI wireframing",
-                    "AI-assisted high-fidelity mockups and prototypes",
-                    "Intelligent usability testing and refinement"
-                  ]
-                },
-                {
-                  id: "iterate",
-                  title: "AI-Driven Continuous Improvement",
-                  icon: Repeat,
-                  description: "Our AI continuously refines and optimizes based on user feedback and performance metrics.",
-                  details: [
-                    "Real-time AI user behavior analysis",
-                    "Predictive improvement identification",
-                    "AI-powered A/B testing",
-                    "Adaptive design refinement"
-                  ]
-                }
-              ].map((process, index) => (
-                <motion.div
-                  key={process.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="h-full"
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="flex items-center mb-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-                          <process.icon className="h-5 w-5 text-primary" aria-hidden="true" />
-                        </div>
-                        <CardTitle className="text-xl">{process.title}</CardTitle>
-                      </div>
-                      <CardDescription>{process.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2" aria-label={`${process.title} details`}>
-                        {process.details.map((detail, detailIndex) => (
-                          <motion.li
-                            key={detailIndex}
-                            className="flex items-start"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.3, delay: (index * 0.1) + (detailIndex * 0.05) }}
-                          >
-                            <CheckCircle className="h-5 w-5 text-primary mr-2 mt-1 flex-shrink-0" aria-hidden="true" />
-                            <span>{detail}</span>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Start Your AI-Powered UX Journey
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section id="faq" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="faq-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="faq-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Frequently Asked Questions</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Get answers to common questions about our AI-powered UX design services and process.
-              </p>
-            </motion.div>
-            <Card className="w-full max-w-3xl mx-auto dark:bg-black-900">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold">Have a question? We're here to help!</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {[
-                    {
-                      question: "What makes happyux.ai different from other UX design agencies?",
-                      answer: "At happyux.ai, we combine cutting-edge AI technology with human-centered design principles. Our approach is data-driven and adaptive, ensuring that every design decision is backed by AI-powered user insights and aligned with business goals. We're not just designers; we're your strategic partners in creating intelligent digital experiences, especially for tech startups looking to innovate rapidly."
-                    },
-                    {
-                      question: "How quickly can you deliver results for my startup?",
-                      answer: "We understand the fast-paced nature of startups. Our AI-powered processes allow us to work efficiently, often delivering initial prototypes within days and complete design overhauls within weeks. The exact timeline depends on the project scope, but we pride ourselves on our quick turnaround without compromising quality."
-                    },
-                    {
-                      question: "How does AI enhance your UX design process?",
-                      answer: "AI enhances our UX design process in multiple ways. It helps us analyze vast amounts of user data quickly, generate and test design variations, predict user behavior, and continuously optimize experiences. This allows us to create more personalized, efficient, and effective user experiences while significantly reducing time-to-market - a crucial advantage for startups."
-                    },
-                    {
-                      question: "Can you work with my existing tech stack?",
-                      answer: "Our AI-powered UX solutions are designed to be flexible and integrative. We have experience working with a wide range of tech stacks and can adapt our AI tools to work seamlessly with your existing infrastructure. Whether you're using cutting-edge technologies or have legacy systems, we ensure smooth integration and knowledge transfer to your team."
-                    },
-                    {
-                      question: "How do you measure the success of an AI-enhanced UX design project?",
-                      answer: "We establish clear, measurable KPIs at the start of each project, tailored to your business goals. These might include improvements in user engagement, conversion rates, task completion times, or customer satisfaction scores. Our AI systems continuously monitor these metrics, providing real-time insights and predictive analytics. This allows us to demonstrate the tangible impact of our work and make data-driven decisions for ongoing optimization."
-                    }
-                  ].map((faq, index) => (
-                    <AccordionItem value={`item-${index}`} key={index}>
-                      <AccordionTrigger className="text-left">
-                        <span className="flex items-center">
-                          <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
-                          {faq.question}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Still have questions? Contact us
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* About Us Section */}
-        <section id="about" className="w-full py-12I'd be happy to go over all the code for your happyux.ai landing page and help address the errors you encountered during testing. Let's review the main components of your project and make sure everything is working correctly.
-
-
-
-Let's start with the main page component. I'll provide the complete code for `app/page.tsx`, and then we'll go through other essential files:
-
-```tsx project="HappyUX Landing Page" file="app/page.tsx" type="react"
-'use client'
-
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { SmilePlus, Search, Palette, Layout, Users, ArrowRight, CheckCircle, Menu, X, Phone, Mail, MessageSquare, Send, Lightbulb, Microscope, PenTool, Repeat, Eye, Zap, MapPin, ChevronDown, PlusCircle, Rocket, Clock, Sparkles } from 'lucide-react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { toast } from "sonner"
 
-type FormData = {
-  name: string
-  email: string
-  projectTypes: string[]
-  message: string
-}
+const projectTypeOptions = [
+  "UX Research",
+  "UI Design",
+  "Product Strategy",
+  "Design System"
+];
 
-type FormErrors = {
-  [K in keyof FormData]?: string
-}
+// Common Section Wrapper Component
+const SectionWrapper = ({ id, children }: { id: string, children: React.ReactNode }) => (
+  <section 
+    id={id} 
+    className="relative min-h-screen py-32 bg-black"
+  >
+    {/* Gradient Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/50 to-black pointer-events-none" />
+    
+    {/* Content */}
+    <div className="relative z-10">
+      {children}
+    </div>
+  </section>
+);
 
-export default function Page() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    projectTypes: [],
-    message: ''
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+// Common Section Header Component
+const SectionHeader = ({ title, subtitle }: { title: string, subtitle: React.ReactNode }) => (
+  <div className="text-center max-w-3xl mx-auto mb-20">
+    <h2 className="text-5xl font-bold text-zinc-100 mb-6">
+      {title}
+    </h2>
+    <p className="text-lg text-zinc-400">
+      {subtitle}
+    </p>
+  </div>
+);
 
-  const projectTypeOptions = [
-    'Website Redesign',
-    'Mobile App Design',
-    'Branding & UI',
-    'Other'
-  ]
+// Common Card Styles
+const cardStyles = {
+  wrapper: "p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors",
+  iconWrapper: "bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6",
+  icon: "w-6 h-6 text-zinc-100",
+  title: "text-xl font-semibold text-zinc-100 mb-3",
+  description: "text-zinc-400",
+  list: "space-y-3",
+  listItem: "flex items-center text-sm text-zinc-400",
+  listItemIcon: "w-4 h-4 mr-2 text-zinc-500"
+};
+
+const buttonStyles = {
+  primary: "inline-flex items-center justify-center px-8 py-4 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-all duration-300 group",
+  icon: "ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+};
+
+const inputStyles = {
+  base: "mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500",
+  error: "border-red-500",
+  label: "text-zinc-200",
+  errorText: "text-sm text-red-500 mt-1"
+};
+
+export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    projectTypes: [] as string[],
+    message: ""
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    projectTypes: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    setErrors(prev => ({ ...prev, [name]: '' }))
-  }
-
-  const handleProjectTypeChange = (checked: boolean, value: string) => {
     setFormData(prev => ({
       ...prev,
-      projectTypes: checked
-        ? [...prev.projectTypes, value]
-        : prev.projectTypes.filter(type => type !== value)
-    }))
-    setErrors(prev => ({ ...prev, projectTypes: '' }))
-  }
+      [e.target.name]: e.target.value
+    }));
+  };
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {}
-
-    if (!formData.name.trim()) newErrors.name = 'Name is required'
-    if (!formData.email.trim()) newErrors.email = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid'
-    if (formData.projectTypes.length === 0) newErrors.projectTypes = 'Please select at least one project type'
-    if (!formData.message.trim()) newErrors.message = 'Message is required'
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+  const handleProjectTypeChange = (checked: boolean, type: string) => {
+    setFormData(prev => ({
+      ...prev,
+      projectTypes: checked 
+        ? [...prev.projectTypes, type]
+        : prev.projectTypes.filter(t => t !== type)
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!validateForm()) return
-
-    setIsSubmitting(true)
-
+    e.preventDefault();
+    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      setIsSubmitted(true)
-    } catch (error) {
-      console.error('Error submitting form:', error)
-      setErrors(prev => ({ ...prev, submit: 'An error occurred. Please try again.' }))
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const scrollToSection = useCallback((sectionId: string) => {
-    const section = document.getElementById(sectionId)
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' })
-    }
-    setIsMenuOpen(false)
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const sections = ['services', 'startup', 'process', 'faq', 'about', 'contact']
+      setIsSubmitting(true);
       
-      sections.forEach((sectionId) => {
-        const section = document.getElementById(sectionId)
-        if (section) {
-          const sectionTop = section.offsetTop - 100
-          const sectionBottom = sectionTop + section.offsetHeight
-          
-          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            const link = document.querySelector(`[data-section="${sectionId}"]`)
-            if (link) {
-              link.classList.add('text-primary')
-            }
-          } else {
-            const link = document.querySelector(`[data-section="${sectionId}"]`)
-            if (link) {
-              link.classList.remove('text-primary')
-            }
-          }
-        }
-      })
+      // Validate form data
+      if (!formData.name || !formData.email || !formData.message) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      // Success handling
+      setFormData({
+        name: '',
+        email: '',
+        projectTypes: [],
+        message: ''
+      });
+      
+      setIsSubmitted(true);
+      toast.success('Message sent successfully!');
+    } catch (error) {
+      // Error handling
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      console.error('Form submission error:', errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    // Add 'dark' class to the <html> element to enable dark mode by default
-    document.documentElement.classList.add('dark')
-  }, [])
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground dark">
-      {/* Skip to main content link */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md">
-        Skip to main content
-      </a>
-
-      {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center px-4">
-          <Link className="flex items-center justify-center" href="#" aria-label="happyux.ai home">
-            <div className="relative group">
-              <SmilePlus className="h-6 w-6 text-primary transition-colors duration-300" aria-hidden="true" />
-              <SmilePlus className="absolute inset-0 h-6 w-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
-            </div>
-            <span className="ml-2 text-2xl font-bold text-primary">happyux.ai</span>
+    <main className="min-h-screen bg-black">
+      <header className="fixed top-0 w-full z-50 border-b border-zinc-800 bg-black">
+        <div className="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <SmilePlus className="h-6 w-6 text-zinc-100" />
+            <span className="font-medium text-zinc-100">happyux.ai</span>
           </Link>
-          <nav className="hidden md:flex ml-auto gap-6" aria-label="Main Navigation">
-            {["Services", "For Startups", "Process", "FAQ", "About", "Contact"].map((item) => (
-              <button
-                key={item}
-                className="text-sm font-medium hover:text-primary transition-colors cursor-pointer relative group focus:outline-none focus:ring-2 focus:ring-primary"
-                onClick={() => scrollToSection(item.toLowerCase().replace(' ', ''))}
-                data-section={item.toLowerCase().replace(' ', '')}
-              >
-                {item}
-                <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
-              </button>
-            ))}
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-12">
+            <a href="#services" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              Services
+            </a>
+            <a href="#startups" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              For Startups
+            </a>
+            <a href="#process" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              Process
+            </a>
+            <a href="#faq" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              FAQ
+            </a>
+            <a href="#about" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              About
+            </a>
+            <a href="#contact" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+              Contact
+            </a>
           </nav>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden ml-auto"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
+
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-zinc-400 hover:text-zinc-100 transition-colors"
           >
-            <span className="sr-only">{isMenuOpen ? "Close menu" : "Open menu"}</span>
-            {isMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-          </Button>
+            <Menu className="h-6 w-6" />
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 w-full bg-black border-b border-zinc-800">
+            <nav className="max-w-[1400px] mx-auto px-6 py-4 flex flex-col gap-4">
+              <a href="#services" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                Services
+              </a>
+              <a href="#startups" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                For Startups
+              </a>
+              <a href="#process" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                Process
+              </a>
+              <a href="#faq" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                FAQ
+              </a>
+              <a href="#about" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                About
+              </a>
+              <a href="#contact" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
+                Contact
+              </a>
+            </nav>
+          </div>
+        )}
       </header>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-16 left-0 right-0 bg-background border-b z-30"
-          >
-            <nav className="container py-4" aria-label="Mobile Navigation">
-              {["Services", "For Startups", "Process", "FAQ", "About", "Contact"].map((item) => (
-                <button
-                  key={item}
-                  className="block w-full text-left py-2 text-sm font-medium hover:text-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
-                  onClick={() => scrollToSection(item.toLowerCase().replace(' ', ''))}
-                  data-section={item.toLowerCase().replace(' ', '')}
-                >
-                  {item}
-                </button>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content */}
-      <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-background to-background/80">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <motion.div
-                className="flex flex-col justify-center space-y-4"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+      {/* Hero Section */}
+      <section className="min-h-screen flex items-center">
+        <div className="max-w-[1400px] mx-auto px-6 py-32 grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Left Column - Text Content */}
+          <div className="space-y-6">
+            <h1 className="text-5xl md:text-6xl font-bold text-zinc-100 leading-tight">
+              AI-Powered UX: Rapid Innovation for Tech Startups
+            </h1>
+            <p className="text-lg text-zinc-400 max-w-xl">
+              happyux.ai combines cutting-edge AI technology with human-centered design to create intelligent digital experiences that adapt, delight users, and drive business growth. Perfect for tech startups looking to revamp their UI/UX quickly.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <a 
+                href="#services" 
+                className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-zinc-200 transition-colors"
               >
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-foreground">
-                    AI-Powered UX: Rapid Innovation for Tech Startups
-                  </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    happyux.ai combines cutting-edge AI technology with human-centered design to create intelligent digital experiences that adapt, delight users, and drive business growth. Perfect for tech startups looking to revamp their UI/UX quickly.
-                  </p>
+                Explore Our AI-Driven Services
+                <span className="ml-2">→</span>
+              </a>
+              <a 
+                href="#startups" 
+                className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition-colors"
+              >
+                Tech Startup Solutions
+                <span className="ml-2">🚀</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column - Image/Visual with adjusted height */}
+          <div className="flex items-center">
+            <div className="relative w-full h-[400px] rounded-2xl overflow-hidden">
+              <Image
+                src="/happyux.gif"
+                alt="AI UX Design Animation"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <SectionWrapper id="services">
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Section Header */}
+          <SectionHeader title="Our AI-Powered Services" subtitle="Elevate your digital products with our cutting-edge AI solutions that blend data-driven insights with human creativity. Rapid delivery for tech startups and established businesses alike." />
+
+          {/* Service Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">
+                AI-Enhanced User Research
+              </h3>
+              <p className="text-zinc-400 mb-6">
+                Uncover deep insights about your users' needs, behaviors, and pain points using advanced AI analytics.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-powered User Interviews & Surveys
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Predictive Usability Testing
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Machine Learning Data Analysis
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-assisted Persona Development
+                </li>
+              </ul>
+            </div>
+
+            {/* Card 2 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">
+                Intelligent Experience Design
+              </h3>
+              <p className="text-zinc-400 mb-6">
+                Create adaptive and intuitive user experiences that learn and evolve with your customers.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-optimized User Flows
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Adaptive Information Architecture
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Intelligent Wireframing & Prototyping
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-enhanced Interaction Design
+                </li>
+              </ul>
+            </div>
+
+            {/* Card 3 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">
+                AI-Driven Visual UI Design
+              </h3>
+              <p className="text-zinc-400 mb-6">
+                Design visually stunning interfaces that dynamically align with your brand and user preferences.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-generated UI Component Creation
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Adaptive Design System Development
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-powered Visual Hierarchy Optimization
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Intelligent Responsive Design
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* Startups Section */}
+      <SectionWrapper id="startups">
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Section Header */}
+          <SectionHeader title="Supercharge Your Tech Startup" subtitle="Revamp your UI/UX and accelerate your growth with our AI-powered design solutions tailored for tech startups." />
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature cards with hover effect */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">Rapid Prototyping</h3>
+              <p className="text-zinc-400">Go from idea to interactive prototype in days, not weeks. Our AI-assisted design process accelerates your product development cycle.</p>
+            </div>
+
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">User-Centric Design</h3>
+              <p className="text-zinc-400">Leverage AI-driven user research to create experiences that resonate with your target audience and drive engagement.</p>
+            </div>
+
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">Competitive Edge</h3>
+              <p className="text-zinc-400">Stand out in the crowded tech landscape with cutting-edge UI/UX that adapts to user behavior and market trends.</p>
+            </div>
+
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">Quick Turnaround</h3>
+              <p className="text-zinc-400">We understand the pace of startups. Our streamlined process ensures fast delivery without compromising on quality.</p>
+            </div>
+
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100 mb-3">Scalable Design Systems</h3>
+              <p className="text-zinc-400">Build a foundation that grows with your startup. Our AI-powered design systems adapt as your product evolves.</p>
+            </div>
+
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-zinc-100">Innovation-Driven</h3>
+              <p className="text-zinc-400">Stay ahead of the curve with AI-generated design concepts that push the boundaries of user experience.</p>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-16">
+            <a href="#contact" className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-zinc-100 transition-colors">
+              Accelerate Your Startup's UX
+              <span className="ml-2">→</span>
+            </a>
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* Process Section */}
+      <SectionWrapper id="process">
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Section Header */}
+          <SectionHeader title="Our AI-Driven Design Process" subtitle="Experience the future of UX design with our innovative AI-powered approach" />
+
+          {/* Process Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Process Card 1 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
                 </div>
-                <div className="flex flex-col gap-4 min-[400px]:flex-row">
-                  <Button size="lg" className="w-full sm:w-auto" onClick={() => scrollToSection('services')}>
-                    Explore Our AI-Driven Services
-                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto" onClick={() => scrollToSection('startup')}>
-                    Tech Startup Solutions
-                    <Rocket className="ml-2 h-5 w-5" aria-hidden="true" />
-                  </Button>
+                <h3 className="text-xl font-semibold text-zinc-100">AI-Powered Discovery</h3>
+              </div>
+              <p className="text-zinc-400 mb-6">
+                We use AI to analyze your business goals, user needs, and market landscape for deeper insights.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-driven stakeholder interview analysis
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Predictive data insights
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-assisted KPI identification
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Intelligent project scope definition
+                </li>
+              </ul>
+            </div>
+
+            {/* Process Card 2 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
                 </div>
-              </motion.div>
-              <motion.div
-                className="mx-auto aspect-video overflow-hidden rounded-xl sm:w-full lg:order-last"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  width={600}
-                  height={400}
-                  alt="AI-powered UX design process visualization showing a team collaborating with AI tools on a digital project"
-                  className="object-cover object-center w-full h-full"
-                />
-              </motion.div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex justify-center mt-12"
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="animate-bounce"
-                onClick={() => scrollToSection('services')}
-                aria-label="Scroll to services section"
-              >
-                <ChevronDown className="h-6 w-6" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Services Section */}
-        <section id="services" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="services-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="services-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Our AI-Powered Services</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Elevate your digital products with our cutting-edge AI solutions that blend data-driven insights with human creativity. Rapid delivery for tech startups and established businesses alike.
+                <h3 className="text-xl font-semibold text-zinc-100">AI-Enhanced User Research</h3>
+              </div>
+              <p className="text-zinc-400 mb-6">
+                Our AI tools conduct thorough user research to inform design decisions and validate assumptions.
               </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {[
-                {
-                  icon: Search,
-                  title: "AI-Enhanced User Research",
-                  description: "Uncover deep insights about your users' needs, behaviors, and pain points using advanced AI analytics.",
-                  features: [
-                    "AI-powered User Interviews & Surveys",
-                    "Predictive Usability Testing",
-                    "Machine Learning Data Analysis",
-                    "AI-assisted Persona Development"
-                  ],
-                },
-                {
-                  icon: Eye,
-                  title: "Intelligent Experience Design",
-                  description: "Create adaptive and intuitive user experiences that learn and evolve with your customers.",
-                  features: [
-                    "AI-optimized User Flows",
-                    "Adaptive Information Architecture",
-                    "Intelligent Wireframing & Prototyping",
-                    "AI-enhanced Interaction Design"
-                  ],
-                },
-                {
-                  icon: Palette,
-                  title: "AI-Driven Visual UI Design",
-                  description: "Design visually stunning interfaces that dynamically align with your brand and user preferences.",
-                  features: [
-                    "AI-generated UI Component Creation",
-                    "Adaptive Design System Development",
-                    "AI-powered Visual Hierarchy Optimization",
-                    "Intelligent Responsive Design"
-                  ],
-                },
-              ].map((service, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full"
-                >
-                  <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                        <service.icon className="h-6 w-6 text-primary" aria-hidden="true" />
-                      </div>
-                      <CardTitle className="text-xl mb-2">{service.title}</CardTitle>
-                      <CardDescription>{service.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                      <ul className="space-y-2" aria-label={`${service.title} features`}>
-                        {service.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center">
-                            <CheckCircle className="h-4 w-4 text-primary mr-2 flex-shrink-0" aria-hidden="true" />
-                            <span className="text-sm">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* For Startups Section */}
-        <section id="startup" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="startup-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="startup-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Supercharge Your Tech Startup</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Revamp your UI/UX and accelerate your growth with our AI-powered design solutions tailored for tech startups.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {[
-                {
-                  icon: Rocket,
-                  title: "Rapid Prototyping",
-                  description: "Go from idea to interactive prototype in days, not weeks. Our AI-assisted design process accelerates your product development cycle.",
-                },
-                {
-                  icon: Users,
-                  title: "User-Centric Design",
-                  description: "Leverage AI-driven user research to create experiences that resonate with your target audience and drive engagement.",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Competitive Edge",
-                  description: "Stand out in the crowded tech landscape with cutting-edge UI/UX that adapts to user behavior and market trends.",
-                },
-                {
-                  icon: Clock,
-                  title: "Quick Turnaround",
-                  description: "We understand the pace of startups. Our streamlined process ensures fast delivery without compromising on quality.",
-                },
-                {
-                  icon: Zap,
-                  title: "Scalable Design Systems",
-                  description: "Build a foundation that grows with your startup. Our AI-powered design systems adapt as your product evolves.",
-                },
-                {
-                  icon: Lightbulb,
-                  title: "Innovation-Driven",
-                  description: "Stay ahead of the curve with AI-generated design concepts that push the boundaries of user experience.",
-                },
-              ].map(({ icon: Icon, title, description }, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full"
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                        <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
-                      </div>
-                      <CardTitle className="text-xl mb-2">{title}</CardTitle>
-                      <CardDescription>{description}</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Accelerate Your Startup's UX
-                <Rocket className="ml-2 h-5 w-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Process Section */}
-        <section id="process" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="process-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="process-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Our AI-Driven Design Process</h2>
-              <p className="mt-4 text-xl text-muted-foreground">
-                Experience the future of UX design with our innovative AI-powered approach
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12">
-              {[
-                {
-                  id: "discovery",
-                  title: "AI-Powered Discovery",
-                  icon: Lightbulb,
-                  description: "We use AI to analyze your business goals, user needs, and market landscape for deeper insights.",
-                  details: [
-                    "AI-driven stakeholder interview analysis",
-                    "Predictive data insights",
-                    "AI-assisted KPI identification",
-                    "Intelligent project scope definition"
-                  ]
-                },
-                {
-                  id: "research",
-                  title: "AI-Enhanced User Research",
-                  icon: Microscope,
-                  description: "Our AI tools conduct thorough user research to inform design decisions and validate assumptions.",
-                  details: [
-                    "AI-powered user interviews and survey analysis",
-                    "Machine learning-driven persona creation",
-                    "AI-assisted competitive analysis",
-                    "Predictive pain point and opportunity identification"
-                  ]
-                },
-                {
-                  id: "design",
-                  title: "AI-Augmented Design",
-                  icon: PenTool,
-                  description: "We create intuitive interfaces and seamless user experiences using AI-powered design tools.",
-                  details: [
-                    "AI-optimized information architecture",
-                    "Generative AI wireframing",
-                    "AI-assisted high-fidelity mockups and prototypes",
-                    "Intelligent usability testing and refinement"
-                  ]
-                },
-                {
-                  id: "iterate",
-                  title: "AI-Driven Continuous Improvement",
-                  icon: Repeat,
-                  description: "Our AI continuously refines and optimizes based on user feedback and performance metrics.",
-                  details: [
-                    "Real-time AI user behavior analysis",
-                    "Predictive improvement identification",
-                    "AI-powered A/B testing",
-                    "Adaptive design refinement"
-                  ]
-                }
-              ].map((process, index) => (
-                <motion.div
-                  key={process.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="h-full"
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 dark:bg-black-900">
-                    <CardHeader>
-                      <div className="flex items-center mb-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-                          <process.icon className="h-5 w-5 text-primary" aria-hidden="true" />
-                        </div>
-                        <CardTitle className="text-xl">{process.title}</CardTitle>
-                      </div>
-                      <CardDescription>{process.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="space-y-2" aria-label={`${process.title} details`}>
-                        {process.details.map((detail, detailIndex) => (
-                          <motion.li
-                            key={detailIndex}
-                            className="flex items-start"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.3, delay: (index * 0.1) + (detailIndex * 0.05) }}
-                          >
-                            <CheckCircle className="h-5 w-5 text-primary mr-2 mt-1 flex-shrink-0" aria-hidden="true" />
-                            <span>{detail}</span>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Start Your AI-Powered UX Journey
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section id="faq" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="faq-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="faq-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Frequently Asked Questions</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Get answers to common questions about our AI-powered UX design services and process.
-              </p>
-            </motion.div>
-            <Card className="w-full max-w-3xl mx-auto dark:bg-black-900">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold">Have a question? We're here to help!</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {[
-                    {
-                      question: "What makes happyux.ai different from other UX design agencies?",
-                      answer: "At happyux.ai, we combine cutting-edge AI technology with human-centered design principles. Our approach is data-driven and adaptive, ensuring that every design decision is backed by AI-powered user insights and aligned with business goals. We're not just designers; we're your strategic partners in creating intelligent digital experiences, especially for tech startups looking to innovate rapidly."
-                    },
-                    {
-                      question: "How quickly can you deliver results for my startup?",
-                      answer: "We understand the fast-paced nature of startups. Our AI-powered processes allow us to work efficiently, often delivering initial prototypes within days and complete design overhauls within weeks. The exact timeline depends on the project scope, but we pride ourselves on our quick turnaround without compromising quality."
-                    },
-                    {
-                      question: "How does AI enhance your UX design process?",
-                      answer: "AI enhances our UX design process in multiple ways. It helps us analyze vast amounts of user data quickly, generate and test design variations, predict user behavior, and continuously optimize experiences. This allows us to create more personalized, efficient, and effective user experiences while significantly reducing time-to-market - a crucial advantage for startups."
-                    },
-                    {
-                      question: "Can you work with my existing tech stack?",
-                      answer: "Our AI-powered UX solutions are designed to be flexible and integrative. We have experience working with a wide range of tech stacks and can adapt our AI tools to work seamlessly with your existing infrastructure. Whether you're using cutting-edge technologies or have legacy systems, we ensure smooth integration and knowledge transfer to your team."
-                    },
-                    {
-                      question: "How do you measure the success of an AI-enhanced UX design project?",
-                      answer: "We establish clear, measurable KPIs at the start of each project, tailored to your business goals. These might include improvements in user engagement, conversion rates, task completion times, or customer satisfaction scores. Our AI systems continuously monitor these metrics, providing real-time insights and predictive analytics. This allows us to demonstrate the tangible impact of our work and make data-driven decisions for ongoing optimization."
-                    }
-                  ].map((faq, index) => (
-                    <AccordionItem value={`item-${index}`} key={index}>
-                      <AccordionTrigger className="text-left">
-                        <span className="flex items-center">
-                          <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
-                          {faq.question}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Still have questions? Contact us
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* About Us Section */}
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-muted/50" aria-labelledby="about-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="about-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">About happyux.ai</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                We're a team of passionate UX designers, AI specialists, and tech enthusiasts dedicated to revolutionizing digital experiences.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h3 className="text-2xl font-bold mb-4">Our Mission</h3>
-                <p className="text-muted-foreground mb-6">
-                  At happyux.ai, we're on a mission to bridge the gap between human-centered design and artificial intelligence. We believe that by harnessing the power of AI, we can create digital experiences that are not only beautiful and intuitive but also intelligent and adaptive.
-                </p>
-                <h3 className="text-2xl font-bold mb-4">Our Approach</h3>
-                <p className="text-muted-foreground mb-6">
-                  We combine cutting-edge AI technology with years of UX design expertise to deliver solutions that are:
-                </p>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Data-driven yet human-centered</li>
-                  <li>Innovative yet user-friendly</li>
-                  <li>Efficient yet thorough</li>
-                  <li>Scalable yet personalized</li>
-                </ul>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
-                <Image
-                  src="/placeholder.svg?height=400&width=600"
-                  width={600}
-                  height={400}
-                  alt="Team of UX designers and AI specialists collaborating on a project"
-                  className="rounded-lg shadow-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-lg"></div>
-              </motion.div>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 text-center"
-            >
-              <Button size="lg" onClick={() => scrollToSection('contact')}>
-                Join Us in Shaping the Future of UX
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-              </Button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Contact Form Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-background/80" aria-labelledby="contact-title">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center mb-12"
-            >
-              <h2 id="contact-title" className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Get in Touch</h2>
-              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Ready to elevate your UX with AI? Let's start a conversation about your project.
-              </p>
-            </motion.div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="dark:bg-black-900">
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-bold">Contact Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center">
-                      <MapPin className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
-                      <p>123 AI Boulevard, Tech City, TC 12345</p>
-                    </div>
-                    <div className="flex items-center">
-                      <Phone className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
-                      <p>+1 (555) 123-4567</p>
-                    </div>
-                    <div className="flex items-center">
-                      <Mail className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
-                      <p>hello@happyux.ai</p>
-                    </div>
-                    <div className="flex items-center">
-                      <MessageSquare className="h-5 w-5 text-primary mr-2" aria-hidden="true" />
-                      <p>Live chat available 24/7</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="dark:bg-black-900">
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-bold">Send us a Message</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          placeholder="Your Name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          className={errors.name ? 'border-red-500' : ''}
-                          aria-invalid={errors.name ? 'true' : 'false'}
-                          aria-describedby={errors.name ? 'name-error' : undefined}
-                        />
-                        {errors.name && (
-                          <p id="name-error" className="text-sm text-red-500 mt-1">{errors.name}</p>
-                        )}
-                      </div>
-                      <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="your@email.com"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          className={errors.email ? 'border-red-500' : ''}
-                          aria-invalid={errors.email ? 'true' : 'false'}
-                          aria-describedby={errors.email ? 'email-error' : undefined}
-                        />
-                        {errors.email && (
-                          <p id="email-error" className="text-sm text-red-500 mt-1">{errors.email}</p>
-                        )}
-                      </div>
-                      <div>
-                        <Label>Project Type</Label>
-                        <div className="grid grid-cols-2 gap-4 mt-2">
-                          {projectTypeOptions.map((type) => (
-                            <div key={type} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={type}
-                                checked={formData.projectTypes.includes(type)}
-                                onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, type)}
-                              />
-                              <Label htmlFor={type}>{type}</Label>
-                            </div>
-                          ))}
-                        </div>
-                        {errors.projectTypes && (
-                          <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
-                        )}
-                      </div>
-                      <div>
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea
-                          id="message"
-                          name="message"
-                          placeholder="Tell us about your project..."
-                          value={formData.message}
-                          onChange={handleInputChange}
-                          className={errors.message ? 'border-red-500' : ''}
-                          aria-invalid={errors.message ? 'true' : 'false'}
-                          aria-describedby={errors.message ? 'message-error' : undefined}
-                        />
-                        {errors.message && (
-                          <p id="message-error" className="text-sm text-red-500 mt-1">{errors.message}</p>
-                        )}
-                      </div>
-                      <Button type="submit" className="w-full" disabled={isSubmitting}>
-                        {isSubmitting ? (
-                          <>
-                            <span className="animate-spin mr-2">⏳</span>
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            Send Message
-                            <Send className="ml-2 h-5 w-5" aria-hidden="true" />
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                    {isSubmitted && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="mt-4 p-4 bg-green-100 text-green-700 rounded-md"
-                      >
-                        <p className="font-semibold">Thank you for your message!</p>
-                        <p>We'll get back to you as soon as possible.</p>
-                      </motion.div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full py-6 bg-background border-t">
-        <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Services</h3>
-              <ul className="space-y-2">
-                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">AI-Enhanced User Research</Link></li>
-                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">Intelligent Experience Design</Link></li>
-                <li><Link href="#services" className="text-sm text-muted-foreground hover:text-primary">AI-Driven Visual UI Design</Link></li>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-powered user interviews and survey analysis
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Machine learning-driven persona creation
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-assisted competitive analysis
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Predictive pain point and opportunity identification
+                </li>
               </ul>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Company</h3>
-              <ul className="space-y-2">
-                <li><Link href="#about" className="text-sm text-muted-foreground hover:text-primary">About Us</Link></li>
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Careers</Link></li>
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Blog</Link></li>
+
+            {/* Process Card 3 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-zinc-100">AI-Augmented Design</h3>
+              </div>
+              <p className="text-zinc-400 mb-6">
+                We create intuitive interfaces and seamless user experiences using AI-powered design tools.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-optimized information architecture
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Generative AI wireframing
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-assisted high-fidelity mockups and prototypes
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Intelligent usability testing and refinement
+                </li>
               </ul>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Resources</h3>
-              <ul className="space-y-2">
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Documentation</Link></li>
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Case Studies</Link></li>
-                <li><Link href="#faq" className="text-sm text-muted-foreground hover:text-primary">FAQ</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Legal</h3>
-              <ul className="space-y-2">
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Terms of Service</Link></li>
-                <li><Link href="#" className="text-sm text-muted-foreground hover:text-primary">Cookie Policy</Link></li>
+
+            {/* Process Card 4 */}
+            <div className="group p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700/50 transition-colors">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="bg-zinc-800 w-12 h-12 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-zinc-100">AI-Driven Continuous Improvement</h3>
+              </div>
+              <p className="text-zinc-400 mb-6">
+                Our AI continuously refines and optimizes based on user feedback and performance metrics.
+              </p>
+              <ul className="space-y-3">
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Real-time AI user behavior analysis
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Predictive improvement identification
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  AI-powered design optimization
+                </li>
+                <li className="flex items-center text-sm text-zinc-400">
+                  <svg className="w-4 h-4 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Intelligent design iteration and refinement
+                </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Link href="#" className="text-muted-foreground hover:text-primary">
-                <span className="sr-only">Facebook</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
-                <span className="sr-only">Twitter</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                </svg>
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
-                <span className="sr-only">LinkedIn</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                  <rect x="2" y="9" width="4" height="12"></rect>
-                  <circle cx="4" cy="4" r="2"></circle>
-                </svg>
-              </Link>
+        </div>
+      </SectionWrapper>
+
+      {/* FAQ Section */}
+      <SectionWrapper id="faq">
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Section Header */}
+          <SectionHeader title="Frequently Asked Questions" subtitle="Get answers to common questions about our AI-powered UX design services and process." />
+
+          {/* FAQ Card */}
+          <div className="w-full max-w-3xl mx-auto">
+            <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
+              <Accordion type="single" collapsible className="w-full space-y-4">
+                {[
+                  {
+                    question: "What makes happyux.ai different from other UX design agencies?",
+                    answer: "At happyux.ai, we combine cutting-edge AI technology with human-centered design principles. Our approach is data-driven and adaptive, ensuring that every design decision is backed by AI-powered user insights and aligned with business goals. We're not just designers; we're your strategic partners in creating intelligent digital experiences, especially for tech startups looking to innovate rapidly."
+                  },
+                  {
+                    question: "How quickly can you deliver results for my startup?",
+                    answer: "We understand the fast-paced nature of startups. Our AI-powered processes allow us to work efficiently, often delivering initial prototypes within days and complete design overhauls within weeks. The exact timeline depends on the project scope, but we pride ourselves on our quick turnaround without compromising quality."
+                  },
+                  {
+                    question: "How does AI enhance your UX design process?",
+                    answer: "AI enhances our UX design process in multiple ways. It helps us analyze vast amounts of user data quickly, generate and test design variations, predict user behavior, and continuously optimize experiences. This allows us to create more personalized, efficient, and effective user experiences while significantly reducing time-to-market - a crucial advantage for startups."
+                  },
+                  {
+                    question: "Can you work with my existing tech stack?",
+                    answer: "Our AI-powered UX solutions are designed to be flexible and integrative. We have experience working with a wide range of tech stacks and can adapt our AI tools to work seamlessly with your existing infrastructure. Whether you're using cutting-edge technologies or have legacy systems, we ensure smooth integration and knowledge transfer to your team."
+                  },
+                  {
+                    question: "How do you measure the success of an AI-enhanced UX design project?",
+                    answer: "We establish clear, measurable KPIs at the start of each project, tailored to your business goals. These might include improvements in user engagement, conversion rates, task completion times, or customer satisfaction scores. Our AI systems continuously monitor these metrics, providing real-time insights and predictive analytics. This allows us to demonstrate the tangible impact of our work and make data-driven decisions for ongoing optimization."
+                  }
+                ].map((faq, index) => (
+                  <AccordionItem 
+                    key={index} 
+                    value={`item-${index}`}
+                    className="border border-zinc-800/50 rounded-lg overflow-hidden"
+                  >
+                    <AccordionTrigger className="px-6 py-4 text-left hover:bg-zinc-800/30 text-zinc-100">
+                      <span className="flex items-center gap-3">
+                        <PlusCircle className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+                        <span>{faq.question}</span>
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 py-4 text-zinc-400">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
-            <p className="text-sm text-muted-foreground mt-4 md:mt-0">
-              © 2024 happyux.ai. All rights reserved.
+          </div>
+        </div>
+      </SectionWrapper>
+
+      {/* About Section */}
+      <section id="about" className="min-h-screen py-32 bg-black relative overflow-hidden">
+        {/* Background Gradient Effect */}
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/20 to-black pointer-events-none" />
+        
+        <div className="max-w-[1400px] mx-auto px-6 relative">
+          {/* Section Header with enhanced typography */}
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-5xl font-bold text-zinc-100 mb-6 tracking-tight">
+              About happyux.ai
+            </h2>
+            <p className="text-lg text-zinc-400 leading-relaxed">
+              We're a team of passionate UX designers, AI specialists, and tech enthusiasts dedicated to revolutionizing digital experiences.
             </p>
           </div>
+
+          {/* Main Content with improved shadows and hover effects */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+            {/* Left Column - Text Content */}
+            <div className="space-y-8 p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 backdrop-blur-sm 
+                hover:bg-zinc-900/40 hover:border-zinc-700/50 transition-all duration-300">
+              <div>
+                <h3 className="text-2xl font-bold text-zinc-100 mb-4 flex items-center gap-3">
+                  <div className="bg-zinc-800 w-10 h-10 rounded-full flex items-center justify-center
+                      shadow-lg shadow-black/50 hover:shadow-black/70 transition-shadow">
+                    <svg className="w-5 h-5 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  Our Mission
+                </h3>
+                <p className="text-zinc-400 leading-relaxed">
+                  At happyux.ai, we're on a mission to bridge the gap between human-centered design and artificial intelligence. We believe that by harnessing the power of AI, we can create digital experiences that are not only beautiful and intuitive but also intelligent and adaptive.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-zinc-100 mb-4 flex items-center gap-3">
+                  <div className="bg-zinc-800 w-10 h-10 rounded-full flex items-center justify-center
+                      shadow-lg shadow-black/50 hover:shadow-black/70 transition-shadow">
+                    <svg className="w-5 h-5 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  Our Approach
+                </h3>
+                <p className="text-zinc-400 mb-6 leading-relaxed">
+                  We combine cutting-edge AI technology with years of UX design expertise to deliver solutions that are:
+                </p>
+                <ul className="space-y-4">
+                  {[
+                    "Data-driven yet human-centered",
+                    "Innovative yet user-friendly",
+                    "Efficient yet thorough",
+                    "Scalable yet personalized"
+                  ].map((item, index) => (
+                    <li key={index} 
+                        className="flex items-center gap-3 text-zinc-400 bg-zinc-800/30 p-4 rounded-lg 
+                          border border-zinc-700/30 hover:bg-zinc-800/40 hover:border-zinc-700/50 
+                          transition-all duration-300 group">
+                      <div className="bg-zinc-800 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+                          shadow-md shadow-black/50 group-hover:shadow-black/70 transition-shadow">
+                        <svg className="w-4 h-4 text-zinc-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="group-hover:text-zinc-300 transition-colors">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Right Column - Image with enhanced effects */}
+            <div className="relative h-full group">
+              <div className="absolute inset-0 rounded-2xl overflow-hidden bg-zinc-900/30 border border-zinc-800/50
+                  backdrop-blur-sm hover:bg-zinc-900/40 hover:border-zinc-700/50 transition-all duration-300">
+                <div className="relative w-full h-full">
+                  <Image
+                    src="/happyux_image12.jpg"
+                    alt="Team of UX designers and AI specialists collaborating"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/40 to-transparent"></div>
+                </div>
+                
+                {/* Enhanced Image Caption */}
+                <div className="absolute bottom-6 left-6 right-6 p-4 bg-black/80 rounded-lg 
+                    backdrop-blur-sm border border-zinc-800/50 transform transition-all duration-300
+                    group-hover:translate-y-[-4px] group-hover:border-zinc-700/50">
+                  <p className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                    Our team collaborating on AI-driven UX solutions
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </footer>
-    </div>
-  )
+      </section>
+
+      {/* Contact Section */}
+      <SectionWrapper id="contact">
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Section Header */}
+          <SectionHeader 
+            title="Get in Touch" 
+            subtitle={
+              <>
+                Ready to elevate your UX with AI? We're based in Nashville, TN USA, 
+                serving clients globally. Let's start a conversation about your project.
+              </>
+            } 
+          />
+
+          {/* Contact Form - Now Centered */}
+          <div className="max-w-xl mx-auto">
+            <div className="p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800/50">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <Label htmlFor="name" className="text-zinc-200">Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 ${
+                      errors.name ? 'border-red-500' : ''
+                    }`}
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="email" className="text-zinc-200">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 ${
+                      errors.email ? 'border-red-500' : ''
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-zinc-200">Project Type</Label>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                    {projectTypeOptions.map((type) => (
+                      <div key={type} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={type}
+                          checked={formData.projectTypes.includes(type)}
+                          onCheckedChange={(checked) => handleProjectTypeChange(checked as boolean, type)}
+                          className="h-5 w-5 border-2 border-zinc-700 rounded 
+                            data-[state=checked]:bg-zinc-900 
+                            data-[state=checked]:border-white 
+                            transition-all
+                            hover:border-zinc-500"
+                          icon={<Check className="h-4 w-4 text-white" />}
+                        />
+                        <Label htmlFor={type} className="text-zinc-400">{type}</Label>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.projectTypes && (
+                    <p className="text-sm text-red-500 mt-1">{errors.projectTypes}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="message" className="text-zinc-200">Message</Label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    placeholder="Tell us about your project..."
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    className={`mt-2 bg-zinc-800/50 border-zinc-700 text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-500 min-h-[120px] ${
+                      errors.message ? 'border-red-500' : ''
+                    }`}
+                  />
+                  {errors.message && (
+                    <p className="text-sm text-red-500 mt-1">{errors.message}</p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-white text-black hover:bg-zinc-200 transition-colors py-6 text-lg font-medium"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      Send Message
+                      <Send className="h-5 w-5" />
+                    </span>
+                  )}
+                </Button>
+              </form>
+
+              {isSubmitted && (
+                <div className="mt-6 p-4 bg-zinc-800/50 border border-green-500/50 rounded-lg">
+                  <p className="text-green-400 font-semibold">Thank you for your message!</p>
+                  <p className="text-zinc-400">We'll get back to you as soon as possible.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </SectionWrapper>
+    </main>
+  );
 }
